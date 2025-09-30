@@ -40,15 +40,18 @@ public class LDEO <T> implements IlistaOrdenada<T>{
     public boolean inserir(T e) {
         No novoNo = new No(e);
         No aux ;
+
         if (qtdItens == 0){
             head = novoNo;
             tail = novoNo;
             qtdItens++;
             return true;
         }
-
+       No atual = head;
        for (int i = 0; i < qtdItens; i++) {
-
+        if((comparador.compare(atual.item,novoNo.item)>0 && ordem==Ordenacao.ASC)||(comparador.compare(atual.item,novoNo.item)<0 && ordem==Ordenacao.DESC)){
+            atual = atual.prox;
+        }
        }
 
 
