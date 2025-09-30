@@ -49,12 +49,35 @@ public class LDEO <T> implements IlistaOrdenada<T>{
         }
        No atual = head;
        for (int i = 0; i < qtdItens; i++) {
-        if((comparador.compare(atual.item,novoNo.item)>0 && ordem==Ordenacao.ASC)||(comparador.compare(atual.item,novoNo.item)<0 && ordem==Ordenacao.DESC)){
+        if((comparador.compare(atual.item,novoNo.item)<0 && ordem==Ordenacao.ASC)||(comparador.compare(atual.item,novoNo.item)>0 && ordem==Ordenacao.DESC)){
             atual = atual.prox;
+        } else if ((comparador.compare(atual.item,novoNo.item)>0 && ordem==Ordenacao.ASC) ||(comparador.compare(atual.item,novoNo.item)<0 && ordem==Ordenacao.DESC)) {
+            if (atual==head){
+                aux = head;
+                novoNo = head;
+                aux.ant = novoNo;
+                atual.prox = aux;
+                qtdItens++;
+                return true;
+            }
+            else if (atual.prox==null){
+                aux = atual;
+                tail = novoNo;
+                novoNo.ant = aux;
+                aux.prox = novoNo;
+                qtdItens++;
+                return true;
+            }else {
+            aux = atual.ant;
+            aux.prox = novoNo;
+            novoNo.ant = aux;
+            novoNo.prox = atual;
+            atual.ant = novoNo;
+            qtdItens++;
+            return true;
         }
        }
-
-
+        return false;
     }
 
 

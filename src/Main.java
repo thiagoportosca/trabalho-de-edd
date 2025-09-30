@@ -8,7 +8,7 @@ public class Main {
         Ordenacao ordenacao = Ordenacao.ASC;
 
         LDEO<Integer> ldeo = new LDEO<>(Ordenacao.ASC,comparador);
-
+        System.out.println(ldeo.testarcomparador(3,20));
 
     }
 
