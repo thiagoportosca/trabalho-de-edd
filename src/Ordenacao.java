@@ -1,0 +1,1 @@
+public enum Ordenacao { ASC, DESC };
