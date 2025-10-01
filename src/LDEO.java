@@ -36,72 +36,90 @@ public class LDEO <T> implements IlistaOrdenada<T>{
         this.ordem = ordem;
     }
 
+
+
+
+
    @Override
     public boolean inserir(T e) {
-        No novoNo = new No(e);
-        No aux ;
-
-        if (qtdItens == 0){
-            head = novoNo;
-            tail = novoNo;
-            qtdItens++;
-            return true;
-        }
-       No atual = head;
-       for (int i = 0; i < qtdItens; i++) {
-        if((comparador.compare(atual.item,novoNo.item)<0 && ordem==Ordenacao.ASC)||(comparador.compare(atual.item,novoNo.item)>0 && ordem==Ordenacao.DESC)){
-            atual = atual.prox;
-        } else if ((comparador.compare(atual.item,novoNo.item)>0 && ordem==Ordenacao.ASC) ||(comparador.compare(atual.item,novoNo.item)<0 && ordem==Ordenacao.DESC)) {
-            if (atual==head){
-                aux = head;
-                novoNo = head;
-                aux.ant = novoNo;
-                atual.prox = aux;
-                qtdItens++;
-                return true;
-            }
-            else if (atual.prox==null){
-                aux = atual;
-                tail = novoNo;
-                novoNo.ant = aux;
-                aux.prox = novoNo;
-                qtdItens++;
-                return true;
-            }else {
-            aux = atual.ant;
-            aux.prox = novoNo;
-            novoNo.ant = aux;
-            novoNo.prox = atual;
-            atual.ant = novoNo;
-            qtdItens++;
-            return true;
-        }
+       No novoNo = new No(e);
+       No aux;
+       if (qtdItens == 0) {
+           head = novoNo;
+           tail = novoNo;
+           qtdItens++;
+           return true;
        }
-        return false;
-    }
+       No atual = head;
+       while (atual != null) {
+
+           if (atual.prox == null && (comparador.compare(atual.item, novoNo.item) > 0 && ordem == Ordenacao.DESC)){
+               tail = novoNo;
+               atual.prox = novoNo;
+               novoNo.ant = atual;
+               qtdItens++;
+               return true;
+           }
 
 
-    public int testarcomparador(T i1, T i2){
+           if ((comparador.compare(atual.item, novoNo.item) < 0 && ordem == Ordenacao.ASC) || (comparador.compare(atual.item, novoNo.item) > 0 && ordem == Ordenacao.DESC)) {
+               atual = atual.prox;
+           } else if ((comparador.compare(atual.item, novoNo.item) > 0 && ordem == Ordenacao.ASC) || (comparador.compare(atual.item, novoNo.item) < 0 && ordem == Ordenacao.DESC)) {
+               if (atual == head) {
+                   head = novoNo;
+                   atual.ant = novoNo;
+                   novoNo.prox = atual;
+                   qtdItens++;
+                   return true;
+               } else {
+                   aux = atual.ant;
+                   aux.prox = novoNo;
+                   novoNo.ant = aux;
+                   novoNo.prox = atual;
+                   atual.ant = novoNo;
+                   qtdItens++;
+                   return true;
+               }
 
-        return comparador.compare(i1,i2);
-    }
+               }
+           if (atual.prox==null && ((comparador.compare(atual.item, novoNo.item) < 0 && ordem == Ordenacao.ASC))){
+               tail = novoNo;
+               atual.prox = novoNo;
+               novoNo.ant = atual;
+               qtdItens++;
+               return true;
+           }
+
+
+           if (comparador.compare(e, atual.item) == 0) {
+               if (atual == tail) {
+                   novoNo.ant = atual;
+                   atual.prox = novoNo;
+                   tail = novoNo;
+               }
+               else {
+                   novoNo.prox = atual.prox;
+                   novoNo.ant = atual;
+                   atual.prox.ant = novoNo;
+                   atual.prox = novoNo;
+               }
+               qtdItens++;
+               return true;
+           }
+
+       }return false;
+   }
+
 
 
     @Override
         public T alterar(int p, T e) {
-            No aux;
-            T old;
+            this.posicao(e);
+            this.removerPosicao(p);
+            this.inserir(e);
 
-            if (p < 0 || p >= qtdItens)
-                return null;
-
-            aux = localizarNo(p);
-
-            old = aux.item;
-            aux.item = e;
-
-            return old;
-        }
+        return e;
+    }
 
         @Override
         public T removerInicio() {
@@ -142,7 +160,7 @@ public class LDEO <T> implements IlistaOrdenada<T>{
 
             ultimo = tail;
 
-            // Penúltimo passa a ser o último
+
             tail = tail.ant;
             tail.prox = null;
 
@@ -152,7 +170,7 @@ public class LDEO <T> implements IlistaOrdenada<T>{
 
             qtdItens--;
 
-            // Retorna o item removido
+
             return item;
         }
 
@@ -162,18 +180,17 @@ public class LDEO <T> implements IlistaOrdenada<T>{
             No no, aux;
             T item;
 
-            // Verifica se P é válido
+
             if (p < 0 || p >= qtdItens)
                 return null;
 
-            // Se P é a primeira posição, então é uma remoção do início
-            // Se P é a ultima posição, então é uma remoção do fim
+
             if (p == 0)
                 return removerInicio();
             else if (p == qtdItens-1)
                 return removerFim();
 
-            // AUX = nó da posição p-1
+
             aux = localizarNo(p-1);
 
             no = aux.prox;
